@@ -29,7 +29,7 @@ A Almost Flappy Bird Clone made using Allegro 5.
 1. Enter in the directory
 
    ```bash
-   $ gcc  main.c $(pkg-config --libs allegro-5 allegro_font-5 allegro_image-5 allegro_ttf-5 allegro_dialog-5 allegro_audio-5 allegro_acodec-5 allegro_primitives-5) -o game.out
+   $ gcc  headers/game.c main.c $(pkg-config --libs allegro-5 allegro_font-5 allegro_image-5 allegro_ttf-5 allegro_dialog-5 allegro_audio-5 allegro_acodec-5 allegro_primitives-5) -o game.out
    $ chmod +x game.out #permission for execute
    $ ./game.out
    ```
