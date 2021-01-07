@@ -228,9 +228,9 @@ void draw()
 {
 
     al_draw_bitmap(GAME.background, 0, -80, 0);
-
-    if (GAME.currentState == ESTADO_INICIAL)
+    switch (GAME.currentState)
     {
+    case ESTADO_INICIAL:
         al_draw_scaled_bitmap(GAME.logo,
                               0, 0,
                               95, 28,
@@ -241,24 +241,20 @@ void draw()
                               366, 204,
                               (LARGURA_TELA / 2) - 60, (ALTURA_TELA / 4) + 100,
                               120, 60, 0);
-    }
-    else if (GAME.currentState == ESTADO_PRE_MENU)
-    {
+        break;
+    case ESTADO_PRE_MENU:
         al_draw_scaled_bitmap(GAME.pre_menu,
                               0, 0,
                               370, 320,
                               (LARGURA_TELA / 2) - 90, (ALTURA_TELA / 2),
                               200, 180, 0);
-    }
-    else if (GAME.currentState == ESTADO_JOGANDO)
-    {
+        break;
+    case ESTADO_JOGANDO:
         drawPlayer(&GAME, &PLAYER);
-
         drawTunnels(&GAME);
         drawPoints(&GAME, &PLAYER);
-    }
-    else if (GAME.currentState == ESTADO_PERDEU)
-    {
+        break;
+    case ESTADO_PERDEU:
         al_draw_bitmap(GAME.gameover,
 
                        (LARGURA_TELA / 2) - 161, (ALTURA_TELA / 2) - 88,
@@ -270,6 +266,10 @@ void draw()
                               (LARGURA_TELA / 2) - 60, (ALTURA_TELA / 3) + 200,
                               120, 60, 0);
         drawPoints(&GAME, &PLAYER);
+        break;
+
+    default:
+        break;
     }
 
     al_draw_bitmap(GAME.i_floor,
@@ -293,38 +293,9 @@ void events()
             GAME.sair = 1;
             printf("Saiu");
         }
-        else if (GAME.currentState == ESTADO_PERDEU)
+        switch (GAME.currentState)
         {
-            if (evento.type == ALLEGRO_EVENT_MOUSE_AXES)
-            {
-
-                if (evento.mouse.x >= (LARGURA_TELA / 2) - 60 &&
-                    evento.mouse.x <= LARGURA_TELA / 2 - 60 + 120 &&
-                    evento.mouse.y >= (ALTURA_TELA / 3) + 200 &&
-                    evento.mouse.y <= (ALTURA_TELA / 3) + 200 + 60)
-                {
-                    al_set_system_mouse_cursor(GAME.janela,
-                                               ALLEGRO_SYSTEM_MOUSE_CURSOR_LINK);
-                }
-                else
-                {
-                    al_set_system_mouse_cursor(GAME.janela, ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
-                }
-            }
-            if (evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-            {
-                if (evento.mouse.x >= (LARGURA_TELA / 2) - 60 &&
-                    evento.mouse.x <= LARGURA_TELA / 2 - 60 + 120 &&
-                    evento.mouse.y >= (ALTURA_TELA / 3) + 200 &&
-                    evento.mouse.y <= (ALTURA_TELA / 3) + 200 + 60)
-                {
-                    onPlayerInitGame(&GAME, &PLAYER);
-                }
-            }
-        }
-        else if (GAME.currentState == ESTADO_INICIAL)
-        {
-
+        case ESTADO_INICIAL:
             if (evento.type == ALLEGRO_EVENT_MOUSE_AXES)
             {
 
@@ -352,19 +323,16 @@ void events()
                     onPlayerStartGame(&GAME, &PLAYER);
                 }
             }
-        }
-        else if (GAME.currentState == ESTADO_PRE_MENU)
-        {
-
+            break;
+        case ESTADO_PRE_MENU:
             if (evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
             {
                 onPlayerPlayGame(&GAME, &PLAYER);
                 PLAYER.y = evento.mouse.y - 45;
                 PLAYER.x = evento.mouse.x - 32;
             }
-        }
-        if (GAME.currentState == ESTADO_JOGANDO)
-        {
+            break;
+        case ESTADO_JOGANDO:
             for (int i = 0; i < (GAME.currentLevel * 10); i++)
             {
                 if (PLAYER.x + 54 >= GAME.TUNNELS[i].x &&
@@ -377,10 +345,7 @@ void events()
                      PLAYER.x + 10 <= GAME.TUNNELS[i].x + 94) &&
                     ((PLAYER.y - 40.5 <= GAME.TUNNELS[i].y + 545) ^ (PLAYER.y - 40.5 >= GAME.TUNNELS[i].y + 594)))
                 {
-                    al_play_sample(GAME.som_dead, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-
-                    al_rest(1);
-                    GAME.currentState = ESTADO_PERDEU;
+                    onPlayerLoseGame(&GAME, &PLAYER);
                 }
             }
             if (evento.type == ALLEGRO_EVENT_MOUSE_AXES)
@@ -393,6 +358,38 @@ void events()
                     onPlayerLoseGame(&GAME, &PLAYER);
                 }
             }
+            break;
+        case ESTADO_PERDEU:
+            if (evento.type == ALLEGRO_EVENT_MOUSE_AXES)
+            {
+
+                if (evento.mouse.x >= (LARGURA_TELA / 2) - 60 &&
+                    evento.mouse.x <= LARGURA_TELA / 2 - 60 + 120 &&
+                    evento.mouse.y >= (ALTURA_TELA / 3) + 200 &&
+                    evento.mouse.y <= (ALTURA_TELA / 3) + 200 + 60)
+                {
+                    al_set_system_mouse_cursor(GAME.janela,
+                                               ALLEGRO_SYSTEM_MOUSE_CURSOR_LINK);
+                }
+                else
+                {
+                    al_set_system_mouse_cursor(GAME.janela, ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
+                }
+            }
+            if (evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+            {
+                if (evento.mouse.x >= (LARGURA_TELA / 2) - 60 &&
+                    evento.mouse.x <= LARGURA_TELA / 2 - 60 + 120 &&
+                    evento.mouse.y >= (ALTURA_TELA / 3) + 200 &&
+                    evento.mouse.y <= (ALTURA_TELA / 3) + 200 + 60)
+                {
+                    onPlayerInitGame(&GAME, &PLAYER);
+                }
+            }
+            break;
+
+        default:
+            break;
         }
     }
 
@@ -458,8 +455,6 @@ int main(void)
 
     while (!GAME.sair)
     {
-        draw();
-        events();
         GAME.cx1 -= GAME.speed;
         GAME.cx2 -= GAME.speed;
         if (GAME.cx1 <= -480)
@@ -467,6 +462,8 @@ int main(void)
             GAME.cx1 = 0;
             GAME.cx2 = 480;
         }
+        draw();
+        events();
     }
     destroyAll();
     return 0;

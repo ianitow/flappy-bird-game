@@ -47,8 +47,10 @@ void onPlayerLoseGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER)
 {
   al_set_system_mouse_cursor(GAME->janela, ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
   al_play_sample(GAME->som_dead, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+  drawPlayer(GAME, PLAYER);
   al_rest(1);
   GAME->currentState = ESTADO_PERDEU;
+  al_show_mouse_cursor(GAME->janela);
 }
 //OTHERS
 void recountTunnels(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER)
