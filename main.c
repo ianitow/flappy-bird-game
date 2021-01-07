@@ -265,6 +265,7 @@ void draw()
                               (LARGURA_TELA / 2) - 60, (ALTURA_TELA / 3) + 200,
                               120, 60, 0);
         drawPoints(&GAME, &PLAYER);
+        drawRecord(&GAME, &PLAYER);
         break;
 
     default:
@@ -351,7 +352,7 @@ void events()
             {
                 PLAYER.y = evento.mouse.y - 45;
                 PLAYER.x = evento.mouse.x - 32;
-                if (PLAYER.y >= ALTURA_TELA - 140)
+                if (PLAYER.y >= ALTURA_TELA - 160)
                 {
 
                     onPlayerLoseGame(&GAME, &PLAYER);

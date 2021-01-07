@@ -61,6 +61,4 @@ typedef struct
   ALLEGRO_TIMER *timer_anim;
 } GAME_VARIABLES;
 void drawTunnels(GAME_VARIABLES *GAME);
-
-void drawRecord();
 #endif

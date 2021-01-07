@@ -16,15 +16,18 @@ typedef struct
   int maxScore;
   ALLEGRO_BITMAP *bird_sprites;
 } PLAYER_VARIABLES;
-
+//Draw
 void drawPoints(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 void drawPlayer(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
-void createOrUpdateRecord(PLAYER_VARIABLES *PLAYER, char *input);
-void readRecord(PLAYER_VARIABLES *PLAYER, char *input);
+void drawRecord(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
+//Events
 void onPlayerInitGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 void onPlayerStartGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 void onPlayerPlayGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 void onPlayerLoseGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
+//OTHERS
 void recountTunnels(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 void onPlayerPassTunnel(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
+void createOrUpdateRecord(PLAYER_VARIABLES *PLAYER, char *input);
+void readRecord(PLAYER_VARIABLES *PLAYER, char *input);
 #endif

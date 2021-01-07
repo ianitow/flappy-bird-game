@@ -22,6 +22,11 @@ void drawPlayer(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER)
   al_draw_bitmap_region(PLAYER->bird_sprites, BIRD_MODES[PLAYER->playerState][0], BIRD_MODES[PLAYER->playerState][1], BIRD_MODES[PLAYER->playerState][2], BIRD_MODES[PLAYER->playerState][3],
                         PLAYER->x, PLAYER->y + 22.5, 0);
 }
+void drawRecord(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER)
+{
+
+  al_draw_textf(GAME->scoreboard, al_map_rgb(120, 120, 120), 10, 35, ALLEGRO_ALIGN_LEFT, "Recorde: %d", PLAYER->maxScore);
+}
 //EVENTS
 void onPlayerInitGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER)
 {
@@ -50,14 +55,13 @@ void onPlayerLoseGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER)
   if (PLAYER->score > PLAYER->maxScore)
   {
     PLAYER->maxScore = PLAYER->score;
+    createOrUpdateRecord(PLAYER, OUTPUT_FILE);
   }
   al_set_system_mouse_cursor(GAME->janela, ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
   al_play_sample(GAME->som_dead, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-  drawPlayer(GAME, PLAYER);
   al_rest(1);
   GAME->currentState = ESTADO_PERDEU;
   al_show_mouse_cursor(GAME->janela);
-  createOrUpdateRecord(PLAYER, OUTPUT_FILE);
 }
 void onPlayerPassTunnel(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER)
 {
@@ -89,7 +93,8 @@ void createOrUpdateRecord(PLAYER_VARIABLES *PLAYER, char *input)
   FILE *file;
   if (file = fopen(input, "w+"))
   {
-    fprintf(file, "%d", PLAYER->maxScore);
+    fwrite(&PLAYER->maxScore, sizeof(int), 1, file);
+
     fclose(file);
   }
   else
@@ -102,10 +107,10 @@ void readRecord(PLAYER_VARIABLES *PLAYER, char *input)
   int buffer;
   FILE *stream;
   // Reading value from file
-  stream = fopen("file.txt", "r");
+  stream = fopen(OUTPUT_FILE, "r");
   if (!stream)
     return;
   fread(&buffer, sizeof(int), 1, stream);
-
+  PLAYER->maxScore = (int)buffer;
   fclose(stream);
 }
