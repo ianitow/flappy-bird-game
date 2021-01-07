@@ -13,15 +13,18 @@ typedef struct
   int playerAnimUp;
   int currentTunnel;
   int score;
+  int maxScore;
   ALLEGRO_BITMAP *bird_sprites;
 } PLAYER_VARIABLES;
 
 void drawPoints(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 void drawPlayer(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
+void createOrUpdateRecord(PLAYER_VARIABLES *PLAYER, char *input);
+void readRecord(PLAYER_VARIABLES *PLAYER, char *input);
 void onPlayerInitGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 void onPlayerStartGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 void onPlayerPlayGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 void onPlayerLoseGame(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 void recountTunnels(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
-void onPlayerPassTunnel();
+void onPlayerPassTunnel(GAME_VARIABLES *GAME, PLAYER_VARIABLES *PLAYER);
 #endif

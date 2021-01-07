@@ -226,7 +226,6 @@ int inicializar()
 
 void draw()
 {
-
     al_draw_bitmap(GAME.background, 0, -80, 0);
     switch (GAME.currentState)
     {
@@ -338,7 +337,7 @@ void events()
                 if (PLAYER.x + 54 >= GAME.TUNNELS[i].x &&
                     PLAYER.x <= GAME.TUNNELS[i].x + 100)
                 {
-                    PLAYER.score++;
+                    onPlayerPassTunnel(&GAME, &PLAYER);
                 }
 
                 if ((PLAYER.x + 50 >= GAME.TUNNELS[i].x &&
@@ -398,21 +397,31 @@ void events()
         al_wait_for_event(GAME.fila_eventos_anim, &evento_anim);
         if (GAME.currentState == ESTADO_JOGANDO)
         {
-
             if (evento_anim.type == ALLEGRO_EVENT_TIMER)
             {
                 if (PLAYER.playerAnimUp)
                 {
-                    if (++PLAYER.playerState >= 2)
+
+                    if (PLAYER.playerState >= 2)
                     {
+                        PLAYER.playerState--;
                         PLAYER.playerAnimUp = 0;
+                    }
+                    else
+                    {
+                        PLAYER.playerState++;
                     }
                 }
                 else
                 {
-                    if (--PLAYER.playerState <= 0)
+                    if (PLAYER.playerState <= 0)
                     {
+                        PLAYER.playerState++;
                         PLAYER.playerAnimUp = 1;
+                    }
+                    else
+                    {
+                        PLAYER.playerState--;
                     }
                 }
             }

@@ -62,4 +62,5 @@ typedef struct
 } GAME_VARIABLES;
 void drawTunnels(GAME_VARIABLES *GAME);
 
+void drawRecord();
 #endif
