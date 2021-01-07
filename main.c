@@ -5,7 +5,7 @@
 
 //Variaveis Globais
 GAME_VARIABLES GAME = {0, 480, DEFAULT_SPEED, 0, 0, 1, 1, 0, 1, 1, 1};
-PLAYER_VARIABLES PLAYER = {(LARGURA_TELA / 2), (ALTURA_TELA / 2), 0, 600, 0, 0};
+PLAYER_VARIABLES PLAYER = {(LARGURA_TELA / 2), (ALTURA_TELA / 2), 0, 0, 1};
 
 void error_msg(char *text)
 {
@@ -401,9 +401,19 @@ void events()
 
             if (evento_anim.type == ALLEGRO_EVENT_TIMER)
             {
-                if (++PLAYER.playerState > 2)
+                if (PLAYER.playerAnimUp)
                 {
-                    PLAYER.playerState = 0;
+                    if (++PLAYER.playerState >= 2)
+                    {
+                        PLAYER.playerAnimUp = 0;
+                    }
+                }
+                else
+                {
+                    if (--PLAYER.playerState <= 0)
+                    {
+                        PLAYER.playerAnimUp = 1;
+                    }
                 }
             }
         }

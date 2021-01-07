@@ -2,14 +2,15 @@
 #define __PLAYER__GAME__
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
+static int BIRD_MODES[3][4] = {{0, 0, 64, 45},
+                               {65, 0, 64, 45},
+                               {130, 0, 64, 45}};
 
 typedef struct
 {
   int x, y;
   int playerState;
-  int playerAnimStart;
-  int playerAnimEnd;
-  int playerAnimCurrent;
+  int playerAnimUp;
   int currentTunnel;
   int score;
   ALLEGRO_BITMAP *bird_sprites;

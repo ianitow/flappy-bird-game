@@ -21,9 +21,6 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_primitives.h>
-static int BIRD_MODES[3][4] = {{0, 0, 64, 45},
-                               {65, 0, 64, 45},
-                               {130, 0, 64, 45}};
 
 typedef struct
 {
