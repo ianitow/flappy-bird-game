@@ -93,7 +93,7 @@ int inicializar()
         al_destroy_timer(GAME.timer);
         return 0;
     }
-    al_set_window_title(GAME.janela, "Flappy Bird 0.1");
+    al_set_window_title(GAME.janela, "Almost Flappy Bird 1.0");
     // Torna apto o uso de mouse na aplicação
     if (!al_install_mouse())
     {
@@ -288,6 +288,7 @@ void events()
     while (!al_is_event_queue_empty(GAME.fila_eventos))
     {
         al_wait_for_event(GAME.fila_eventos, &evento);
+
         if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {
             GAME.sair = 1;
@@ -467,7 +468,6 @@ int destroyAll()
 }
 int main(void)
 {
-
     if (!inicializar())
     {
         return -1;
