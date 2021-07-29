@@ -9,9 +9,8 @@ PLAYER_VARIABLES PLAYER = {(LARGURA_TELA / 2), (ALTURA_TELA / 2), 0, 0, 1};
 
 void error_msg(char *text)
 {
-    al_show_native_message_box(NULL, "ERRO",
-                               "Ocorreu o seguinte erro e o programa sera finalizado:",
-                               text, NULL, ALLEGRO_MESSAGEBOX_ERROR);
+    printf("Ocorreu o seguinte erro e o programa sera finalizado");
+    printf(text);
 }
 int inicializar()
 {
