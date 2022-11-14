@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include "headers/game.h"
 #include "headers/player.h"
-
-//Variaveis Globais
+int x = 1;
+// Variaveis Globais
 GAME_VARIABLES GAME = {0, 480, DEFAULT_SPEED, 0, 0, 1, 1, 0, 1, 1, 1};
 PLAYER_VARIABLES PLAYER = {(LARGURA_TELA / 2), (ALTURA_TELA / 2), 0, 0, 1};
 
@@ -72,7 +72,7 @@ int inicializar()
         error_msg("Falha ao inicializar add-on allegro_ttf");
         return -1;
     }
-    GAME.timer = al_create_timer(1 / FPS);
+    GAME.timer = al_create_timer(1 / 75.0);
     if (!GAME.timer)
     {
         error_msg("Falha ao criar temporizador");
@@ -125,7 +125,7 @@ int inicializar()
         return 0;
     }
 
-    //carrega a folha de sprites na variavel
+    // carrega a folha de sprites na variavel
 
     GAME.logo = al_load_bitmap("images/logo.bmp");
     if (!GAME.logo)
@@ -136,8 +136,9 @@ int inicializar()
         al_destroy_event_queue(GAME.fila_eventos);
         return 0;
     }
-    GAME.background = al_load_bitmap("images/background.bmp");
-    if (!GAME.background)
+
+    ALLEGRO_BITMAP *bgBitmap = al_load_bitmap("images/background.bmp");
+    if (!bgBitmap)
     {
         error_msg("Falha ao carregar background");
         al_destroy_timer(GAME.timer);
@@ -145,6 +146,8 @@ int inicializar()
         al_destroy_event_queue(GAME.fila_eventos);
         return 0;
     }
+    initBackground(&GAME.background, 0, -80, 479, 630, 1, 0, -1, 1, bgBitmap);
+
     GAME.i_floor = al_load_bitmap("images/ground.png");
     if (!GAME.i_floor)
     {
@@ -213,6 +216,8 @@ int inicializar()
         error_msg("Falha ao carregar gameover");
         return -1;
     }
+    GAME.render = false;
+    GAME.TUNNELS = malloc(TOTAL_TUNELS * sizeof(TUNNELS_VARIABLES));
     al_register_event_source(GAME.fila_eventos, al_get_display_event_source(GAME.janela));
     al_register_event_source(GAME.fila_eventos, al_get_timer_event_source(GAME.timer));
     al_register_event_source(GAME.fila_eventos_anim, al_get_timer_event_source(GAME.timer_anim));
@@ -220,12 +225,13 @@ int inicializar()
     al_start_timer(GAME.timer);
     al_start_timer(GAME.timer_anim);
     onPlayerInitGame(&GAME, &PLAYER);
+
     return 1;
 }
 
 void draw()
 {
-    al_draw_bitmap(GAME.background, 0, -80, 0);
+
     switch (GAME.currentState)
     {
     case ESTADO_INICIAL:
@@ -277,17 +283,24 @@ void draw()
     al_draw_bitmap(GAME.i_floor,
                    GAME.cx2, (ALTURA_TELA - 100),
                    0);
+                       al_flip_display();
+drawBackground(&GAME.background);
 
-    al_flip_display();
+    
 }
 void events()
 {
     ALLEGRO_EVENT evento;
     ALLEGRO_EVENT evento_anim;
+
     while (!al_is_event_queue_empty(GAME.fila_eventos))
     {
-        al_wait_for_event(GAME.fila_eventos, &evento);
 
+        al_wait_for_event(GAME.fila_eventos, &evento);
+        if (evento.type == ALLEGRO_EVENT_TIMER)
+        {
+            updateBackground(&GAME.background);
+        }
         if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {
             GAME.sair = 1;
@@ -333,12 +346,13 @@ void events()
             }
             break;
         case ESTADO_JOGANDO:
-            for (int i = 0; i < (GAME.currentLevel * 10); i++)
+            for (int i = 0; i < TOTAL_TUNELS; i++)
             {
                 if (PLAYER.x + 54 >= GAME.TUNNELS[i].x &&
-                    PLAYER.x <= GAME.TUNNELS[i].x + 100)
+                    PLAYER.x <= GAME.TUNNELS[i].x + 100 && !GAME.TUNNELS[i].passed)
                 {
                     onPlayerPassTunnel(&GAME, &PLAYER);
+                    GAME.TUNNELS[i].passed = 1;
                 }
 
                 if ((PLAYER.x + 50 >= GAME.TUNNELS[i].x &&
@@ -430,20 +444,41 @@ void events()
     }
     if (GAME.currentState == ESTADO_JOGANDO)
     {
-        for (int i = 0; i < GAME.currentLevel * 10; i++)
+        for (int i = 0; i < TOTAL_TUNELS; i++)
         {
             GAME.TUNNELS[i].x -= GAME.speed;
         }
-        if (GAME.TUNNELS[(GAME.currentLevel * 10) - 1].x < -182)
+        for (int i = 0; i < TOTAL_TUNELS; i++)
         {
-            GAME.currentLevel++;
-            GAME.speed++;
-            if (GAME.speed < NIVEL_MAX_VELOCITY)
+
+            if (GAME.TUNNELS[i].x < -182)
             {
-                GAME.speed++;
+                if (GAME.totalTunnelsGenerated >= GAME.currentLevel * 10 && GAME.TUNNELS[GAME.lastTunnelIndex].x < -182)
+                {
+                    GAME.currentLevel++;
+                    GAME.speed++;
+                    if (GAME.speed < NIVEL_MAX_VELOCITY)
+                    {
+                        GAME.speed++;
+                    }
+                    
+                    recountTunnels(&GAME, &PLAYER);
+                    
+                }
+                else if (GAME.totalTunnelsGenerated  < GAME.currentLevel * 10)
+                {
+                    const int maximum_number = -200;
+                    const int minimum_number = -500;
+                    GAME.TUNNELS[i].x = 650;
+                    GAME.TUNNELS[i].y = (rand() % (maximum_number + 1 - minimum_number)) + minimum_number;
+                    GAME.TUNNELS[i].passed = 0;
+                    GAME.totalTunnelsGenerated++;
+                    GAME.lastTunnelIndex = i;
+                
+                }
+                if(GAME.totalTunnelsPassed == (GAME.currentLevel * 10))
+                 al_play_sample(GAME.som_levelup, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
             }
-            recountTunnels(&GAME, &PLAYER);
-            al_play_sample(GAME.som_levelup, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         }
     }
 }
@@ -454,7 +489,7 @@ int destroyAll()
     al_destroy_bitmap(GAME.tunnel_down);
     al_destroy_bitmap(GAME.tunnel_up);
     al_destroy_bitmap(GAME.pre_menu);
-    al_destroy_bitmap(GAME.background);
+    al_destroy_bitmap(GAME.background.backgroundImage);
     al_destroy_bitmap(GAME.button_play);
     al_destroy_timer(GAME.timer);
     al_destroy_timer(GAME.timer_anim);

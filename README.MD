@@ -1,8 +1,6 @@
-# Almost a FlappyBird
+# Flappy Bird in C
 
 A Almost Flappy Bird Clone made using Allegro 5.
-
-**IT'S NOT A FLAPPY BIRD TRADICTIONAL.**
 
 ## How to play on linux (Ubuntu 20.04)
 

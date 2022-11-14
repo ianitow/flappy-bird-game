@@ -12,6 +12,7 @@
 #define NIVEL_MAX_VELOCITY 8
 #define LARGURA_TELA 480
 #define ALTURA_TELA 630
+#define TOTAL_TUNELS 3
 #include <stdlib.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
@@ -25,7 +26,18 @@ typedef struct
 {
   int index;
   int x, y;
+  int passed;
 } TUNNELS_VARIABLES;
+
+typedef struct
+{
+  ALLEGRO_BITMAP *backgroundImage;
+  int x,y;
+  int width,height;
+  int velX,velY;
+  int dirX,dirY;
+} BACKGROUND;
+
 
 typedef struct
 {
@@ -40,8 +52,11 @@ typedef struct
   int desenha;
   int currentState;
   int currentLevel;
+  int totalTunnelsPassed;
+  int totalTunnelsGenerated;
+  int lastTunnelIndex;
   ALLEGRO_BITMAP *logo;
-  ALLEGRO_BITMAP *background;
+  BACKGROUND background;
   ALLEGRO_BITMAP *i_floor;
   ALLEGRO_BITMAP *button_play;
   ALLEGRO_BITMAP *pre_menu;
@@ -58,6 +73,11 @@ typedef struct
   ALLEGRO_EVENT_QUEUE *fila_eventos_anim;
   ALLEGRO_TIMER *timer;
   ALLEGRO_TIMER *timer_anim;
+  int render;
 } GAME_VARIABLES;
 void drawTunnels(GAME_VARIABLES *GAME);
+void initBackground(BACKGROUND *bg, int x, int y,  int width, int height,int velX, int velY, int dirX, int dirY,ALLEGRO_BITMAP *image);
+
+void updateBackground(BACKGROUND *bg );
+void drawBackground(BACKGROUND *bg);
 #endif
