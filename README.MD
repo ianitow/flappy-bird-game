@@ -19,7 +19,7 @@ A Almost Flappy Bird Clone made using Allegro 5.
 1. Clone the repository:
 
    ```bash
-   $ git clone https://github.com/ianitow/almost-flappy-bird
+   $ git clonehttps://github.com/ianitow/flappy-bird-game.git
    ```
 
    or download as zip and extract to a folder.
